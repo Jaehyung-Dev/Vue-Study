@@ -1,33 +1,24 @@
 <template>
-  <h1>영화정보</h1>
-  <div v-for="(movie, i) in data" :key="i" class="item">
-    <figure>
-      <img :src="`${movie.imgUrl}`" :alt="movie.title">
-    </figure>
-    <div class="info">
-      <h3 class="bg-yellow">{{ movie.title }}</h3>
-      <p>개봉: {{ movie.year }}</p>
-      <p>장르: {{ movie.category }}</p>
-      <button @:click="increaseLike(i)">좋아요</button>
-      <span>{{ movie.like }}</span>
-      <p>
-        <button @:click="isModal=true; selectedMovie=i">상세보기</button>
-      </p>
-    </div>
-  </div>
-
-  <div class="modal" v-if="isModal">
-    <div class="inner">
-      <h3>{{ data[selectedMovie].title }}</h3>
-      <p>영화 상세정보</p>
-      <button @:click="isModal=false">닫기</button>
-    </div>
-  </div>
+  <Navbar/>
+  <Event :text="text"/>
+  <Movies 
+    :data="data" 
+    @openModal="isModal=true;selectedMovie=$event"
+    @increaseLike="increaseLike($event)"/>
+  <!-- props의 속성명과 변수명은 관례적으로 동일하게 사용한다. -->
+  <Modal 
+    :data="data"
+    :isModal="isModal" 
+    :selectedMovie="selectedMovie"
+    @closeModal="isModal=false"/>
 </template>
 
 <script>
   import data from './assets/movies';
-  console.log(data);
+  import Navbar from './components/Navbar.vue';
+  import Modal from './components/Modal.vue';
+  import Event from './components/Event.vue';
+  import Movies from './components/Movies.vue';
 
   export default {
     // 이 안에 기능을 정의할 수 있음 Vue 문법임
@@ -40,12 +31,19 @@
         isModal: false,
         data: data,
         selectedMovie: 0,
+        text: 'NEPLIX 강렬한 운명의 드라마, 경기크리처!!!',
       }
     },
     methods: {
       increaseLike(i) {
         this.data[i].like += 1;
       }
+    },
+    components: {
+      Navbar: Navbar,
+      Modal: Modal,
+      Event: Event,
+      Movies: Movies,
     }
   }
 </script>
